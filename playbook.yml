@@ -1,0 +1,23 @@
+- name: install HAPROXY with 2 simple python servers
+  hosts: net
+  become: yes
+  tasks:
+  - name: Copy a file rsync.sh
+    ansible.builtin.copy:
+      src: files/rsync.sh
+      dest: /etc/rsync.sh
+      mode: a+x
+      remote_src: no
+  - name: Creates an entry like "0 0 * * bash /etc/rsync.sh"
+    ansible.builtin.cron:
+      name: "Backup home dir"
+      minute: "0"
+      hour: "0"
+      user: vagrant
+      job: "bash /etc/rsync.sh"
+  - name: Copy a file rsync-increment.sh
+    ansible.builtin.copy:
+      src: files/rsync-increment.sh
+      dest: /etc/rsync-increment.sh
+      mode: a+x
+      remote_src: no
